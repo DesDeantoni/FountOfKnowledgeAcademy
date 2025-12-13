@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Fount of Knowledge Academy</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Fount of Knowledge Academy">
+    <meta name="description" content="Homeschool Program">
+    <meta name="keywords" content="Fount of Knowledge, homeschool, academy, education">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        ul.topnav {
+            width: 60%;
+            list-style-type: none;
+            margin-left: 20%;
+            padding: 0;
+            overflow: hidden;
+            background-color: #789;
+        }
+        ul.topnav li { float: right; }
+        ul.topnav li a {
+            display: block;
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        ul.topnav li a:hover:not(.active) { background-color: #111; }
+        ul.topnav li a.active { background-color: #999; }
+        ul.topnav li.right { float: right; }
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right, ul.topnav li { float: none; }
+        }
+
+        div {
+            float: left;
+            text-align: center;
+            width: 60%;
+            margin-left: 20%;
+        }
+        h1 {
+            float: left;
+            width: 60%;
+            margin-left: 20%;
+        }
+        h3 {
+            float: left;
+            width: 60%;
+            margin-left: 22%;
+        }
+        p {
+            float: left;
+            width: 55%;
+            margin-left: 20%;
+        }
+        .left, .right { float: left; width: 20%; }
+        .main { float: left; width: 60%; }
+
+        @media screen and (max-width: 800px) {
+            .left, .main, .right { width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="font-size:3vw">Fount of Knowledge Academy</h1>
+
+    <ul class="topnav">
+        <li><a class="active" href="mailto:info@fountofknowledge.com">Contact</a></li>
+        <li><a href="#">Programs</a></li>
+        <li><a href="#">Curriculum</a></li>
+        <li><a href="#">About</a></li>
+    </ul>
+
+    <div><hr></div>
+
+    <div>
+        <img src="logo.jpg" style="max-width:100%;height:auto;" alt="Fount of Knowledge Academy Logo">
+    </div>
+
+    <p>
+        Welcome to Fount of Knowledge Academy — a mastery-driven homeschool program dedicated to blending compliance with creativity. 
+        Our mission is to inspire lifelong learning through <!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Fount of Knowledge Academy</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Fount of Knowledge Academy">
+    <meta name="description" content="Homeschool Program">
+    <meta name="keywords" content="Fount of Knowledge, homeschool, academy, education">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        ul.topnav {
+            width: 60%;
+            list-style-type: none;
+            margin-left: 20%;
+            padding: 0;
+            overflow: hidden;
+            background-color: #789;
+        }
+        ul.topnav li { float: right; }
+        ul.topnav li a {
+            display: block;
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        ul.topnav li a:hover:not(.active) { background-color: #111; }
+        ul.topnav li a.active { background-color: #999; }
+        ul.topnav li.right { float: right; }
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right, ul.topnav li { float: none; }
+        }
+
+        div {
+            float: left;
+            text-align: center;
+            width: 60%;
+            margin-left: 20%;
+        }
+        h1 {
+            float: left;
+            width: 60%;
+            margin-left: 20%;
+        }
+        h3 {
+            float: left;
+            width: 60%;
+            margin-left: 22%;
+        }
+        p {
+            float: left;
+            width: 55%;
+            margin-left: 20%;
+        }
+        .left, .right { float: left; width: 20%; }
+        .main { float: left; width: 60%; }
+
+        @media screen and (max-width: 800px) {
+            .left, .main, .right { width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="font-size:3vw">Fount of Knowledge Academy</h1>
+
+    <ul class="topnav">
+        <li><a class="active" href="mailto:info@fountofknowledge.com">Contact</a></li>
+        <li><a href="#">Programs</a></li>
+        <li><a href="#">Curriculum</a></li>
+        <li><a href="#">About</a></li>
+    </ul>
+
+    <div><hr></div>
+
+    <div>
+        <img src="logo.jpg" style="max-width:100%;height:auto;" alt="Fount of Knowledge Academy Logo">
+    </div>
+
+    <p>
+        Welcome to Fount of Knowledge Academy — a mastery-driven homeschool program dedicated to blending compliance with creativity. 
+        Our mission is to inspire lifelong learning through <!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Fount of Knowledge Academy</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Fount of Knowledge Academy">
+    <meta name="description" content="Homeschool Program">
+    <meta name="keywords" content="Fount of Knowledge, homeschool, academy, education">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        ul.topnav {
+            width: 60%;
+            list-style-type: none;
+            margin-left: 20%;
+            padding: 0;
+            overflow: hidden;
+            background-color: #789;
+        }
+        ul.topnav li { float: right; }
+        ul.topnav li a {
+            display: block;
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        ul.topnav li a:hover:not(.active) { background-color: #111; }
+        ul.topnav li a.active { background-color: #999; }
+        ul.topnav li.right { float: right; }
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right, ul.topnav li { float: none; }
+        }
+
+        div {
+            float: left;
+            text-align: center;
+            width: 60%;
+            margin-left: 20%;
+        }
+        h1 {
+            float: left;
+            width: 60%;
+            margin-left: 20%;
+        }
+        h3 {
+            float: left;
+            width: 60%;
+            margin-left: 22%;
+        }
+        p {
+            float: left;
+            width: 55%;
+            margin-left: 20%;
+        }
+        .left, .right { float: left; width: 20%; }
+        .main { float: left; width: 60%; }
+
+        @media screen and (max-width: 800px) {
+            .left, .main, .right { width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="font-size:3vw">Fount of Knowledge Academy</h1>
+
+    <ul class="topnav">
+        <li><a class="active" href="mailto:info@fountofknowledge.com">Contact</a></li>
+        <li><a href="#">Programs</a></li>
+        <li><a href="#">Curriculum</a></li>
+        <li><a href="#">About</a></li>
+    </ul>
+
+    <div><hr></div>
+
+    <div>
+        <img src="logo.jpg" style="max-width:100%;height:auto;" alt="Fount of Knowledge Academy Logo">
+    </div>
+
+    <p>
+        Welcome to Fount of Knowledge Academy — a mastery-driven homeschool program dedicated to blending compliance with creativity. 
+        Our mission is to inspire lifelong learning through personalized curriculum, cultural exploration, and academic excellence.
+    </p>
+
+<div><hr></div>
+
+    <section>
+        <h3>Our Mission</h3>
+        <p>
+            We believe education should empower students to think critically, embrace culture, and pursue mastery. 
+            Fount of Knowledge Academy provides a structured yet flexible environment where students grow academically and personally.
+        </p>
+    </section>
+
+    <section>
+        <h3>Curriculum Highlights</h3>
+        <ul>
+            <li>Human Geography — 36-week pacing guide aligned to district standards.</li>
+            <li>Japanese Language & Culture — introduction to hiragana, katakana, and cultural traditions.</li>
+            <li>STEM Foundations — hands-on projects in science, technology, engineering, and math.</li>
+            <li>Capstone Projects — independent research and presentations to build confidence and mastery.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Contact Us</h3>
+        <p>Email: <a href="mailto:info@fountofknowledge.com">info@fountofknowledge.com</a></p>
+    </section>
+
+    <div><hr></div>
+<footer>
+        <p>&copy; 2025 Fount of Knowledge Academy</p>
+    </footer>
+</body>
+</html>
