@@ -4,60 +4,173 @@
     <title>Resources - Fount of Knowledge Academy</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
+    <style>
+        :root {
+            --bg-light: #ffffff;
+            --text-light: #000000;
+            --accent: #E7CD78;
+            --accent-dark: #D8B238;
+            --accent-hover: #136207;
+            --font-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-base);
+            background: #fdfaf2;
+            color: #222;
+        }
+
+        .page-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .page-logo {
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .page-logo img {
+            max-width: 350px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        ul.topnav {
+            width: 100%;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--accent);
+        }
+
+        ul.topnav li {
+            float: right;
+        }
+
+        ul.topnav li a {
+            display: block;
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul.topnav li a:hover:not(.active) {
+            background-color: var(--accent-hover);
+        }
+
+        ul.topnav li a.active {
+            background-color: var(--accent-dark);
+        }
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li {
+                float: none;
+                text-align: center;
+            }
+        }
+
+        .page-divider {
+            margin: 24px 0;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        main h1 {
+            margin-top: 0;
+        }
+
+        main p {
+            line-height: 1.6;
+        }
+
+        main h2 {
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        main ul {
+            padding-left: 20px;
+        }
+
+        footer {
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Logo -->
-    <header>
-        <img src="Logo.jpeg" alt="Fount of Knowledge Academy Logo" class="logo">
-    </header>
+    <div class="page-wrapper">
 
-    <!-- Navigation Bar -->
-    <ul class="topnav">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="curriculum.html">Curriculum</a></li>
-        <li><a class="active" href="resources.html">Resources</a></li>
-        <li><a href="mailto:fountofknowledgeacademy@gmail.com">Contact</a></li>
-    </ul>
+        <div class="page-logo">
+            <img src="Logo.jpeg" alt="Fount of Knowledge Academy Logo">
+        </div>
 
-    <!-- Page Content -->
-    <main>
-        <h1>Learning Resources</h1>
-        <p>These are the trusted tools and websites we use across subjects to support individualized, sacred learning at Fount of Knowledge Academy.</p>
-
-        <h2>📘 Language Arts & Reading</h2>
-        <ul>
-            <li><a href="https://membean.com/">Membean</a> — Vocabulary training with adaptive practice.</li>
-            <li><a href="https://newsela.com/">Newsela</a> — Current events articles adapted to reading levels.</li>
+        <ul class="topnav">
+            <li><a href="mailto:fountofknowledgeacademy@gmail.com">Contact</a></li>
+            <li><a href="#">Student Life</a></li>
+            <li><a class="active" href="resources.html">Resources</a></li>
+            <li><a href="curriculum.html">Curriculum</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html">Home</a></li>
         </ul>
 
-        <h2>➗ Math</h2>
-        <ul>
-            <li><a href="https://www.zearn.org/">Zearn Math</a> — Interactive math lessons aligned to standards.</li>
-            <li><a href="https://www.khanacademy.org/">Khan Academy</a> — Free math practice and video lessons.</li>
-            <li><a href="https://www.ixl.com/">IXL</a> — Comprehensive math practice across grade levels.</li>
-            <li><a href="https://www.aleks.com/">ALEKS</a> — Adaptive math and science assessment/practice.</li>
-        </ul>
+        <hr class="page-divider">
 
-        <h2>🌍 Social Studies & Civics</h2>
-        <ul>
-            <li><a href="https://www.icivics.org/">iCivics</a> — Interactive civics and government games.</li>
-            <li><a href="https://www.ck12.org/">CK-12</a> — Free open resources for social studies and science.</li>
-        </ul>
+        <main>
+            <h1>Learning Resources</h1>
+            <p>These are the trusted tools and websites we use across subjects to support individualized, sacred learning at Fount of Knowledge Academy.</p>
 
-        <h2>🔬 Science</h2>
-        <ul>
-            <li><a href="https://www.ck12.org/student/">CK-12 Science</a> — Free digital textbooks and simulations.</li>
-            <li><a href="https://phet.colorado.edu/">PhET Interactive Simulations</a> — Science and math simulations from CU Boulder.</li>
-        </ul>
+            <h2>📘 Language Arts & Reading</h2>
+            <ul>
+                <li><a href="https://membean.com/">Membean</a> — Vocabulary training with adaptive practice.</li>
+                <li><a href="https://newsela.com/">Newsela</a> — Current events articles adapted to reading levels.</li>
+            </ul>
 
-        <h2>🈴 Japanese Language</h2>
-        <ul>
-            <li><a href="https://genki3.japantimes.co.jp/en/">Genki Textbooks & Workbooks</a> — Structured Japanese study.</li>
-            <li><a href="https://minato-jf.jp/">JF Japanese e-Learning Minato</a> — Online Japanese courses from the Japan Foundation.</li>
-        </ul>
-    </main>
+            <h2>➗ Math</h2>
+            <ul>
+                <li><a href="https://www.zearn.org/">Zearn Math</a> — Interactive math lessons aligned to standards.</li>
+                <li><a href="https://www.khanacademy.org/">Khan Academy</a> — Free math practice and video lessons.</li>
+                <li><a href="https://www.ixl.com/">IXL</a> — Comprehensive math practice across grade levels.</li>
+                <li><a href="https://www.aleks.com/">ALEKS</a> — Adaptive math and science assessment/practice.</li>
+            </ul>
+
+            <h2>🌍 Social Studies & Civics</h2>
+            <ul>
+                <li><a href="https://www.icivics.org/">iCivics</a> — Interactive civics and government games.</li>
+                <li><a href="https://www.ck12.org/">CK-12</a> — Free open resources for social studies and science.</li>
+            </ul>
+
+            <h2>🔬 Science</h2>
+            <ul>
+                <li><a href="https://www.ck12.org/student/">CK-12 Science</a> — Free digital textbooks and simulations.</li>
+                <li><a href="https://phet.colorado.edu/">PhET Interactive Simulations</a> — Science and math simulations from CU Boulder.</li>
+            </ul>
+
+            <h2>🈴 Japanese Language</h2>
+            <ul>
+                <li><a href="https://genki3.japantimes.co.jp/en/">Genki Textbooks & Workbooks</a> — Structured Japanese study.</li>
+                <li><a href="https://minato-jf.jp/">JF Japanese e-Learning Minato</a> — Online Japanese courses from the Japan Foundation.</li>
+            </ul>
+
+            <hr class="page-divider">
+
+            <footer>
+                <p>Copyright 2025 Fount of Knowledge Academy</p>
+            </footer>
+        </main>
+    </div>
 </body>
 </html>
