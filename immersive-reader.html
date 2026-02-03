@@ -160,3 +160,347 @@
 
     #ir-tts-controls select {
       font-size: 0.8rem;
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      border-radius: 4px;
+      padding: 0.15rem 0.35rem;
+    }
+
+    #ir-tts-controls input[type="range"] {
+      width: 80px;
+    }
+
+    /* Themes */
+    .ir-theme-dark {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    .ir-theme-light {
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    .ir-theme-sepia {
+      background: #fdf3e3;
+      color: #3b2f2a;
+    }
+
+    .ir-theme-dark #ir-content {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    .ir-theme-light #ir-content {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .ir-theme-sepia #ir-content {
+      background: #fdf3e3;
+      color: #3b2f2a;
+    }
+
+    @media (max-width: 768px) {
+      #ir-content {
+        padding: 1.25rem 1.25rem;
+      }
+      #ir-header-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <h1>Sample Page Content</h1>
+    <p>
+      This is example content to demonstrate the immersive reader. In a real scenario, this would be
+      the body of an assignment, a proposal, or any long-form text on a webpage. The immersive reader
+      will extract this text and present it in a focused, customizable reading environment with
+      text-to-speech support.
+    </p>
+    <p>
+      You can reuse the immersive reader on any page by including the script and adding a button that
+      calls <code>ImmersiveReader.launch()</code>. For Kyla, this might be a Google Classroom
+      assignment. For work, this might be a 30-page proposal rendered as HTML.
+    </p>
+
+    <button id="open-immersive-btn">Open Immersive Reader</button>
+  </main>
+
+  <!-- Immersive Reader Overlay -->
+  <div id="immersive-overlay" class="ir-theme-dark">
+    <header id="ir-header">
+      <div id="ir-header-left">
+        <div id="ir-title">Immersive Reader</div>
+      </div>
+      <div id="ir-header-right">
+        <label>
+          Theme:
+          <select id="ir-theme-select">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="sepia">Sepia</option>
+          </select>
+        </label>
+        <label>
+          Text size:
+          <input type="range" id="ir-font-size" min="16" max="28" value="18">
+        </label>
+        <label>
+          Line spacing:
+          <input type="range" id="ir-line-height" min="14" max="24" value="17">
+        </label>
+        <label>
+          <input type="checkbox" id="ir-focus-toggle">
+          Line focus
+        </label>
+        <button id="ir-close-btn">Close</button>
+      </div>
+    </header>
+
+    <div id="ir-content-wrapper">
+      <div id="ir-content">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+
+    <footer id="ir-footer">
+      <div id="ir-tts-controls">
+        <button id="ir-tts-play">Play</button>
+        <button id="ir-tts-pause">Pause</button>
+        <button id="ir-tts-resume">Resume</button>
+        <button id="ir-tts-stop">Stop</button>
+        <label>
+          Voice:
+          <select id="ir-voice-select"></select>
+        </label>
+        <label>
+          Speed:
+          <input type="range" id="ir-rate" min="0.5" max="2" step="0.1" value="1">
+        </label>
+      </div>
+      <div id="ir-status">Ready</div>
+    </footer>
+  </div>
+
+  <script>
+    // Public API object so you can reuse this on any page
+    const ImmersiveReader = (() => {
+      const overlay = document.getElementById('immersive-overlay');
+      const contentEl = document.getElementById('ir-content');
+      const themeSelect = document.getElementById('ir-theme-select');
+      const fontSizeRange = document.getElementById('ir-font-size');
+      const lineHeightRange = document.getElementById('ir-line-height');
+      const focusToggle = document.getElementById('ir-focus-toggle');
+      const statusEl = document.getElementById('ir-status');
+
+      const ttsPlayBtn = document.getElementById('ir-tts-play');
+      const ttsPauseBtn = document.getElementById('ir-tts-pause');
+      const ttsResumeBtn = document.getElementById('ir-tts-resume');
+      const ttsStopBtn = document.getElementById('ir-tts-stop');
+      const voiceSelect = document.getElementById('ir-voice-select');
+      const rateRange = document.getElementById('ir-rate');
+
+      let currentLines = [];
+      let currentLineIndex = 0;
+      let voices = [];
+      let utterance = null;
+
+      function extractPageText() {
+        // Basic heuristic: grab text from main, article, or body
+        const main = document.querySelector('main, article') || document.body;
+        const clone = main.cloneNode(true);
+
+        // Remove buttons, scripts, nav, etc.
+        clone.querySelectorAll('script, style, nav, button, header, footer').forEach(el => el.remove());
+
+        return clone.innerText
+          .split('\n')
+          .map(l => l.trim())
+          .filter(l => l.length > 0)
+          .join(' ');
+      }
+
+      function buildLines(text) {
+        return text
+          .split(/(?<=[.!?])\s+/)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+      }
+
+      function renderContent(text) {
+        contentEl.innerHTML = '';
+        currentLines = buildLines(text);
+        currentLineIndex = 0;
+
+        currentLines.forEach((line, i) => {
+          const span = document.createElement('span');
+          span.className = 'ir-line';
+          if (i === 0) span.classList.add('active');
+          span.textContent = line;
+          contentEl.appendChild(span);
+        });
+      }
+
+      function applyTypography() {
+        const size = fontSizeRange.value + 'px';
+        const lh = (parseInt(lineHeightRange.value, 10) / 10).toFixed(1);
+        contentEl.style.fontSize = size;
+        contentEl.style.lineHeight = lh;
+      }
+
+      function applyTheme() {
+        overlay.classList.remove('ir-theme-dark', 'ir-theme-light', 'ir-theme-sepia');
+        overlay.classList.add('ir-theme-' + themeSelect.value);
+      }
+
+      function updateFocusMode() {
+        if (focusToggle.checked) {
+          contentEl.classList.add('focus-mode');
+        } else {
+          contentEl.classList.remove('focus-mode');
+        }
+      }
+
+      function moveLine(delta) {
+        const lines = Array.from(contentEl.querySelectorAll('.ir-line'));
+        if (!lines.length) return;
+        lines.forEach(l => l.classList.remove('active'));
+        currentLineIndex = Math.min(Math.max(currentLineIndex + delta, 0), lines.length - 1);
+        const active = lines[currentLineIndex];
+        active.classList.add('active');
+        active.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+
+      // Text-to-Speech
+      function loadVoices() {
+        voices = speechSynthesis.getVoices();
+        voiceSelect.innerHTML = '';
+        voices.forEach((v, i) => {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = v.name + (v.lang ? ` (${v.lang})` : '');
+          voiceSelect.appendChild(opt);
+        });
+      }
+
+      function speak(text) {
+        if (!window.speechSynthesis) {
+          statusEl.textContent = 'Text-to-speech not supported in this browser.';
+          return;
+        }
+        speechSynthesis.cancel();
+        utterance = new SpeechSynthesisUtterance(text);
+        const voiceIndex = parseInt(voiceSelect.value, 10);
+        if (voices[voiceIndex]) {
+          utterance.voice = voices[voiceIndex];
+        }
+        utterance.rate = parseFloat(rateRange.value);
+        utterance.onstart = () => statusEl.textContent = 'Speaking...';
+        utterance.onend = () => statusEl.textContent = 'Finished.';
+        utterance.onerror = () => statusEl.textContent = 'Error during speech.';
+        speechSynthesis.speak(utterance);
+      }
+
+      function pauseSpeech() {
+        if (speechSynthesis.speaking && !speechSynthesis.paused) {
+          speechSynthesis.pause();
+          statusEl.textContent = 'Paused.';
+        }
+      }
+
+      function resumeSpeech() {
+        if (speechSynthesis.paused) {
+          speechSynthesis.resume();
+          statusEl.textContent = 'Speaking...';
+        }
+      }
+
+      function stopSpeech() {
+        speechSynthesis.cancel();
+        statusEl.textContent = 'Stopped.';
+      }
+
+      function getFullText() {
+        return currentLines.join(' ');
+      }
+
+      function open() {
+        const text = extractPageText();
+        if (!text || !text.trim()) {
+          alert('No readable text found on this page.');
+          return;
+        }
+        renderContent(text);
+        applyTypography();
+        applyTheme();
+        updateFocusMode();
+        overlay.style.display = 'flex';
+        statusEl.textContent = 'Ready';
+      }
+
+      function close() {
+        stopSpeech();
+        overlay.style.display = 'none';
+      }
+
+      // Event wiring
+      themeSelect.addEventListener('change', applyTheme);
+      fontSizeRange.addEventListener('input', applyTypography);
+      lineHeightRange.addEventListener('input', applyTypography);
+      focusToggle.addEventListener('change', updateFocusMode);
+
+      document.getElementById('ir-close-btn').addEventListener('click', close);
+
+      document.addEventListener('keydown', (e) => {
+        if (overlay.style.display !== 'flex') return;
+        if (e.key === 'Escape') {
+          close();
+        } else if (focusToggle.checked && e.key === 'ArrowDown') {
+          e.preventDefault();
+          moveLine(1);
+        } else if (focusToggle.checked && e.key === 'ArrowUp') {
+          e.preventDefault();
+          moveLine(-1);
+        }
+      });
+
+      // TTS controls
+      ttsPlayBtn.addEventListener('click', () => {
+        speak(getFullText());
+      });
+      ttsPauseBtn.addEventListener('click', pauseSpeech);
+      ttsResumeBtn.addEventListener('click', resumeSpeech);
+      ttsStopBtn.addEventListener('click', stopSpeech);
+      rateRange.addEventListener('input', () => {
+        if (utterance && speechSynthesis.speaking && !speechSynthesis.paused) {
+          // Changing rate mid-speech is not well-supported; restart
+          speak(getFullText());
+        }
+      });
+
+      if ('speechSynthesis' in window) {
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      } else {
+        statusEl.textContent = 'Text-to-speech not supported in this browser.';
+      }
+
+      return {
+        launch: open,
+        close
+      };
+    })();
+
+    // Example: button on this page
+    document.getElementById('open-immersive-btn').addEventListener('click', () => {
+      ImmersiveReader.launch();
+    });
+  </script>
+</body>
+</html>
