@@ -10,396 +10,495 @@
     <link rel="icon" type="image/png" href="favicon.png">
 
     <style>
+        :root {
+            --bg-light: #ffffff;
+            --text-light: #000000;
+            --bg-dark: #121212;
+            --text-dark: #f5f5f5;
+            --accent: #E7CD78;
+            --accent-dark: #D8B238;
+            --accent-hover: #136207;
+            --font-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-base);
+            background: #fdfaf2;
+            color: #222;
+        }
+
+        /* PAGE LAYOUT (SCOPED) */
+        .page-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .page-logo {
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .page-logo img {
+            max-width: 350px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         ul.topnav {
-            width: 60%;
+            width: 100%;
             list-style-type: none;
-            margin-left: 20%;
+            margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #E7CD78;
+            background-color: var(--accent);
         }
-        ul.topnav li { float: right; }
+
+        ul.topnav li {
+            float: right;
+        }
+
         ul.topnav li a {
             display: block;
             color: white;
             padding: 14px 16px;
             text-decoration: none;
         }
-        ul.topnav li a:hover:not(.active) { background-color: #136207; }
-        ul.topnav li a.active { background-color: #D8B238; }
-        ul.topnav li.right { float: right; }
+
+        ul.topnav li a:hover:not(.active) {
+            background-color: var(--accent-hover);
+        }
+
+        ul.topnav li a.active {
+            background-color: var(--accent-dark);
+        }
 
         @media screen and (max-width: 600px) {
-            ul.topnav li.right, ul.topnav li { float: none; }
-        }
-
-        div {
-            float: left;
-            text-align: center;
-            width: 60%;
-            margin-left: 20%;
-        }
-        h1 {
-            float: left;
-            width: 60%;
-            margin-left: 20%;
-        }
-        h3 {
-            float: left;
-            width: 60%;
-            margin-left: 22%;
-        }
-        ul {
-            float: left;
-            width: 50%; 
-            margin-left: 25%;
-            margin-right: 300px;
+            ul.topnav li {
+                float: none;
+                text-align: center;
             }
-        p {
-            float: left;
-            width: 55%;
-            margin-left: 20%;
         }
-        .left, .right { float: left; width: 20%; }
-        .main { float: left; width: 60%; }
 
-        @media screen and (max-width: 800px) {
-            .left, .main, .right { width: 100%; }
+        .page-divider {
+            margin: 24px 0;
+            border: none;
+            border-top: 1px solid #ccc;
         }
-        img {
-    max-width: 350px;  /* or whatever size you want */
-    height: auto;      /* keeps proportions correct */
-    display: block;
-    margin: 0 auto;    /* centers the image */
-}
+
+        .page-main-button {
+            margin: 16px 0;
+        }
+
+        .page-main-button button {
+            padding: 10px 18px;
+            border-radius: 4px;
+            border: none;
+            background: #136207;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .page-main-button button:hover {
+            background: #0f4c05;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        main p {
+            line-height: 1.6;
+        }
+
+        main h3 {
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        main ul {
+            padding-left: 20px;
+        }
+
+        footer {
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* IMMERSIVE READER OVERLAY */
+        #immersive-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #immersive-overlay.active {
+            display: flex;
+        }
+
+        .ir-container {
+            background: var(--bg-light);
+            color: var(--text-light);
+            width: min(900px, 95vw);
+            height: min(90vh, 700px);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .ir-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: #f0e4c0;
+            border-bottom: 1px solid #e0d2a0;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ir-controls-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ir-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .ir-control label {
+            white-space: nowrap;
+        }
+
+        .ir-header button {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .ir-close-btn {
+            background: #b3261e;
+            color: #fff;
+        }
+
+        .ir-close-btn:hover {
+            background: #8f1f18;
+        }
+
+        .ir-play-btn {
+            background: #136207;
+            color: #fff;
+        }
+
+        .ir-play-btn:hover {
+            background: #0f4c05;
+        }
+
+        .ir-body {
+            flex: 1;
+            overflow: auto;
+            padding: 16px 24px;
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        .ir-text {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .ir-line-focus .ir-text p {
+            max-width: 40em;
+            margin-inline: auto;
+        }
+
+        /* THEMES */
+        .ir-theme-light .ir-body {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        .ir-theme-dark .ir-body {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .ir-theme-sepia .ir-body {
+            background: #f4ecd8;
+            color: #3b2f2f;
+        }
     </style>
 </head>
 
-
-
 <body>
-    
+    <div class="page-wrapper">
+        <div class="page-logo">
+            <img src="Logo.jpeg" alt="Fount of Knowledge Academy Logo">
+        </div>
 
-    <div>
-      <img src="Logo.jpeg" alt="Fount of Knowledge Academy Logo">
-    </div>
-
-    <ul class="topnav">
-        <li><a class="active" href="mailto:FountOfKnowledgeAcademy@gmail.com">Contact</a></li>
-        <li><a href="#">Student Life</a></li> <!-- only if you have this page -->
-        <li><a href="resources.html">Resources</a></li>
-         <li><a href="curriculum.html">Curriculum</a></li>
-        <li><a href="about.html">About</a></li>
-   
-    
-    
-    
-    </ul>
-
-    <div><hr></div>
-
-   <button onclick="ImmersiveReader.launch()">Open Immersive Reader</button>
- 
-    <main>
-    <p>
-        Welcome to Fount of Knowledge Academy — a mastery-driven homeschool program where learning is not just education, but a sacred journey. 
-        Here, every student is honored as an individual, and knowledge flows like a living fountain, guiding them toward mastery, confidence, and purpose.
-        
-    </p>
-
-<div><hr></div>
-
-    <section>
-        <h3>Our Mission</h3>
-        <p>
-            Our mission is to inspire lifelong learning through personalized curriculum, cultural exploration, and academic excellence.
-            Fount of Knowledge Academy exists to deliver truly individualized education — empowering each student to learn at their own pace, pursue their passions, and achieve mastery with dignity and confidence. 
-            We transform education into a personal journey, where every student receives a tailored path that honors their strengths, supports their challenges, and cultivates lifelong curiosity. 
-            Through a structured yet flexible homeschool program, we blend academic rigor with creative exploration to ensure every learner thrives on a path designed uniquely for them.
-        </p>
-    </section>
-
-    <section>
-        <h3>Our Legal Framework</h3>
-        <p>Fount of Knowledge Academy operates under the Colorado Home-Based Education Program as defined in Colorado Revised Statutes § 22‑33‑104. 
-        Parents are required to file a written Notice of Intent with a Colorado school district at least 14 days before beginning homeschooling. 
-        Instruction must include reading, writing, speaking, mathematics, history, civics, literature, and science, and must total at least 172 days per year averaging 4 hours per day. 
-        Parents are recognized as the teachers of record, and annual assessment results must be submitted to the district or kept on file. 
-        This legal framework ensures that our individualized program is both compliant with state law and faithful to our mission of delivering truly personalized education.</p>
-    </section>
-    <section>
-        <h3>Curriculum Highlights</h3>
-    
-            <ul>
-            <li>Human Geography — 36-week pacing guide aligned to district standards.</li>
-            <li>Japanese Language & Culture — introduction to hiragana, katakana, and cultural traditions.</li>
-            <li>STEM Foundations — hands-on projects in science, technology, engineering, and math.</li>
-            <li>Capstone Projects — independent research and presentations to build confidence and mastery.</li>
+        <ul class="topnav">
+            <li><a class="active" href="mailto:FountOfKnowledgeAcademy@gmail.com">Contact</a></li>
+            <li><a href="#">Student Life</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="curriculum.html">Curriculum</a></li>
+            <li><a href="about.html">About</a></li>
         </ul>
 
-        
-    </section>
+        <hr class="page-divider">
 
-    <section>
-        <h3>Contact Us</h3>
-        <p>Email: <a href="mailto:FountOfKnowledgeAcademy@gmail.com">FountOfKnowledgeAcademy@gmail.com</a></p>
-    </section>
+        <div class="page-main-button">
+            <button onclick="ImmersiveReader.launch()">Open Immersive Reader</button>
+        </div>
 
-    <div><hr></div>
-<footer>
-        <p>Copyright 2025 Fount of Knowledge Academy</p>
-    </footer>
-     </main> 
-    <!-- Modern Immersive Reader Overlay -->
-<div id="immersive-overlay" aria-hidden="true">
-  <div class="ir-toolbar">
-    <div class="ir-left">
-      <button class="ir-btn" id="ir-close-btn">✕</button>
+        <main>
+            <p>
+                Welcome to Fount of Knowledge Academy — a mastery-driven homeschool program where learning is not just education, but a sacred journey.
+                Here, every student is honored as an individual, and knowledge flows like a living fountain, guiding them toward mastery, confidence, and purpose.
+            </p>
+
+            <hr class="page-divider">
+
+            <section>
+                <h3>Our Mission</h3>
+                <p>
+                    Our mission is to inspire lifelong learning through personalized curriculum, cultural exploration, and academic excellence.
+                    Fount of Knowledge Academy exists to deliver truly individualized education — empowering each student to learn at their own pace, pursue their passions, and achieve mastery with dignity and confidence.
+                    We transform education into a personal journey, where every student receives a tailored path that honors their strengths, supports their challenges, and cultivates lifelong curiosity.
+                    Through a structured yet flexible homeschool program, we blend academic rigor with creative exploration to ensure every learner thrives on a path designed uniquely for them.
+                </p>
+            </section>
+
+            <section>
+                <h3>Our Legal Framework</h3>
+                <p>
+                    Fount of Knowledge Academy operates under the Colorado Home-Based Education Program as defined in Colorado Revised Statutes § 22‑33‑104.
+                    Parents are required to file a written Notice of Intent with a Colorado school district at least 14 days before beginning homeschooling.
+                    Instruction must include reading, writing, speaking, mathematics, history, civics, literature, and science, and must total at least 172 days per year averaging 4 hours per day.
+                    Parents are recognized as the teachers of record, and annual assessment results must be submitted to the district or kept on file.
+                    This legal framework ensures that our individualized program is both compliant with state law and faithful to our mission of delivering truly personalized education.
+                </p>
+            </section>
+
+            <section>
+                <h3>Curriculum Highlights</h3>
+                <ul>
+                    <li>Human Geography — 36-week pacing guide aligned to district standards.</li>
+                    <li>Japanese Language &amp; Culture — introduction to hiragana, katakana, and cultural traditions.</li>
+                    <li>STEM Foundations — hands-on projects in science, technology, engineering, and math.</li>
+                    <li>Capstone Projects — independent research and presentations to build confidence and mastery.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Contact Us</h3>
+                <p>Email: <a href="mailto:FountOfKnowledgeAcademy@gmail.com">FountOfKnowledgeAcademy@gmail.com</a></p>
+            </section>
+
+            <hr class="page-divider">
+
+            <footer>
+                <p>Copyright 2025 Fount of Knowledge Academy</p>
+            </footer>
+        </main>
     </div>
-    <div class="ir-center">
-      <label>
-        Theme:
-        <select id="ir-theme-select">
-          <option value="light">Light</option>
-          <option value="sepia">Sepia</option>
-          <option value="dark">Dark</option>
-        </select>
-      </label>
 
-      <label>
-        Text size:
-        <input type="range" id="ir-font-size" min="16" max="36" value="20">
-      </label>
+    <!-- Modern Immersive Reader Overlay with Text-to-Speech -->
+    <div id="immersive-overlay" aria-hidden="true">
+        <div class="ir-container ir-theme-light" id="ir-container">
+            <div class="ir-header">
+                <div class="ir-controls-group">
+                    <div class="ir-control">
+                        <label for="ir-theme">Theme:</label>
+                        <select id="ir-theme">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="sepia">Sepia</option>
+                        </select>
+                    </div>
 
-      <label>
-        Line spacing:
-        <input type="range" id="ir-line-height" min="1.2" max="2.2" step="0.1" value="1.6">
-      </label>
+                    <div class="ir-control">
+                        <label for="ir-text-size">Text size:</label>
+                        <input type="range" id="ir-text-size" min="14" max="32" value="18">
+                    </div>
 
-      <label>
-        <input type="checkbox" id="ir-focus-toggle">
-        Line focus
-      </label>
+                    <div class="ir-control">
+                        <label for="ir-line-spacing">Line spacing:</label>
+                        <input type="range" id="ir-line-spacing" min="1.2" max="2.2" step="0.1" value="1.6">
+                    </div>
+
+                    <div class="ir-control">
+                        <label for="ir-line-focus">Line focus</label>
+                        <input type="checkbox" id="ir-line-focus">
+                    </div>
+                </div>
+
+                <div class="ir-controls-group">
+                    <button class="ir-play-btn" id="ir-play-pause">Play</button>
+                    <button class="ir-close-btn" id="ir-close">Close</button>
+                </div>
+            </div>
+
+            <div class="ir-body">
+                <div class="ir-text" id="ir-text"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="ir-right">
-      <button class="ir-btn" id="ir-tts-play">▶</button>
-      <button class="ir-btn" id="ir-tts-pause">⏸</button>
-      <button class="ir-btn" id="ir-tts-resume">⏵</button>
-      <button class="ir-btn" id="ir-tts-stop">⏹</button>
+    <script>
+        (function () {
+            const overlay = document.getElementById("immersive-overlay");
+            const container = document.getElementById("ir-container");
+            const textEl = document.getElementById("ir-text");
+            const themeSelect = document.getElementById("ir-theme");
+            const textSizeRange = document.getElementById("ir-text-size");
+            const lineSpacingRange = document.getElementById("ir-line-spacing");
+            const lineFocusCheckbox = document.getElementById("ir-line-focus");
+            const closeBtn = document.getElementById("ir-close");
+            const playPauseBtn = document.getElementById("ir-play-pause");
 
-      <label>
-        Voice:
-        <select id="ir-voice-select"></select>
-      </label>
+            let isSpeaking = false;
+            let currentUtterance = null;
 
-      <label>
-        Speed:
-        <input type="range" id="ir-rate" min="0.5" max="2" step="0.1" value="1">
-      </label>
-    </div>
-  </div>
+            function extractPageText() {
+                const main = document.querySelector("main");
+                return main ? main.innerText.trim() : "";
+            }
 
-  <div class="ir-content-wrapper">
-    <div id="ir-content"></div>
-  </div>
-</div>
+            function applyTheme(theme) {
+                container.classList.remove("ir-theme-light", "ir-theme-dark", "ir-theme-sepia");
+                if (theme === "dark") {
+                    container.classList.add("ir-theme-dark");
+                } else if (theme === "sepia") {
+                    container.classList.add("ir-theme-sepia");
+                } else {
+                    container.classList.add("ir-theme-light");
+                }
+            }
 
-<style>
-  /* SCOPED: Immersive Reader only */
-  #immersive-overlay {
-    position: fixed;
-    inset: 0;
-    background: white;
-    display: none;
-    flex-direction: column;
-    z-index: 999999;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow: hidden;
-  }
+            function applyTextSize(size) {
+                textEl.style.fontSize = size + "px";
+            }
 
-  #immersive-overlay.ir-open {
-    display: flex;
-    animation: fadeIn 0.25s ease-out;
-  }
+            function applyLineSpacing(spacing) {
+                textEl.style.lineHeight = spacing;
+            }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+            function applyLineFocus(enabled) {
+                if (enabled) {
+                    container.classList.add("ir-line-focus");
+                } else {
+                    container.classList.remove("ir-line-focus");
+                }
+            }
 
-  #immersive-overlay .ir-toolbar {
-    width: 100%;
-    background: #f3f3f3;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+            function open() {
+                const content = extractPageText();
+                textEl.textContent = content || "No readable content found in the page.";
+                overlay.classList.add("active");
+                overlay.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
 
-  #immersive-overlay .ir-btn {
-    background: #e0e0e0;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-  }
+            function close() {
+                stopSpeech();
+                overlay.classList.remove("active");
+                overlay.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            }
 
-  #immersive-overlay .ir-btn:hover {
-    background: #d5d5d5;
-  }
+            function stopSpeech() {
+                if ("speechSynthesis" in window) {
+                    window.speechSynthesis.cancel();
+                }
+                isSpeaking = false;
+                playPauseBtn.textContent = "Play";
+            }
 
-  #immersive-overlay .ir-content-wrapper {
-    flex: 1;
-    overflow-y: auto;
-    padding: 40px 15%;
-  }
+            function toggleSpeech() {
+                if (!("speechSynthesis" in window)) {
+                    alert("Text-to-speech is not supported in this browser.");
+                    return;
+                }
 
-  #immersive-overlay #ir-content {
-    font-size: 20px;
-    line-height: 1.6;
-    color: #222;
-  }
+                if (isSpeaking) {
+                    stopSpeech();
+                    return;
+                }
 
-  #immersive-overlay .focus-mode .ir-line:not(.active) {
-    opacity: 0.25;
-  }
+                const text = textEl.textContent || "";
+                if (!text.trim()) return;
 
-  #immersive-overlay .ir-line.active {
-    background: #fff8c5;
-    transition: background 0.2s;
-  }
+                stopSpeech();
 
-  /* Themes */
-  #immersive-overlay.ir-theme-light {
-    background: white;
-    color: #222;
-  }
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.onend = () => {
+                    isSpeaking = false;
+                    playPauseBtn.textContent = "Play";
+                };
 
-  #immersive-overlay.ir-theme-sepia {
-    background: #f4ecd8;
-    color: #4b3e2a;
-  }
+                isSpeaking = true;
+                playPauseBtn.textContent = "Pause";
+                window.speechSynthesis.speak(currentUtterance);
+            }
 
-  #immersive-overlay.ir-theme-dark {
-    background: #1e1e1e;
-    color: #e5e5e5;
-  }
-</style>
+            themeSelect.addEventListener("change", () => {
+                applyTheme(themeSelect.value);
+            });
 
-<script>
-  const ImmersiveReader = (() => {
-    const overlay = document.getElementById("immersive-overlay");
-    const contentEl = document.getElementById("ir-content");
+            textSizeRange.addEventListener("input", () => {
+                applyTextSize(textSizeRange.value);
+            });
 
-    const themeSelect = document.getElementById("ir-theme-select");
-    const fontSizeRange = document.getElementById("ir-font-size");
-    const lineHeightRange = document.getElementById("ir-line-height");
-    const focusToggle = document.getElementById("ir-focus-toggle");
+            lineSpacingRange.addEventListener("input", () => {
+                applyLineSpacing(lineSpacingRange.value);
+            });
 
-    const ttsPlay = document.getElementById("ir-tts-play");
-    const ttsPause = document.getElementById("ir-tts-pause");
-    const ttsResume = document.getElementById("ir-tts-resume");
-    const ttsStop = document.getElementById("ir-tts-stop");
-    const voiceSelect = document.getElementById("ir-voice-select");
-    const rateRange = document.getElementById("ir-rate");
+            lineFocusCheckbox.addEventListener("change", () => {
+                applyLineFocus(lineFocusCheckbox.checked);
+            });
 
-    let voices = [];
-    let utterance = null;
+            closeBtn.addEventListener("click", close);
 
-    function extractPageText() {
-    const main = document.querySelector("main");
-      const clone = main.cloneNode(true);
-      clone.querySelectorAll("script, style, nav, button, header, footer").forEach(el => el.remove());
-      return clone.innerText.trim();
-    }
+            overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) {
+                    close();
+                }
+            });
 
-    function renderContent(text) {
-      contentEl.innerHTML = "";
-      const lines = text.split(/(?<=[.!?])\s+/);
+            playPauseBtn.addEventListener("click", toggleSpeech);
 
-      lines.forEach((line, i) => {
-        const span = document.createElement("span");
-        span.className = "ir-line";
-        span.textContent = line;
-        contentEl.appendChild(span);
-      });
-    }
+            window.ImmersiveReader = {
+                launch: open,
+                close: close
+            };
 
-    function applyTheme() {
-      overlay.classList.remove("ir-theme-light", "ir-theme-sepia", "ir-theme-dark");
-      overlay.classList.add("ir-theme-" + themeSelect.value);
-    }
-
-    function applyTypography() {
-      contentEl.style.fontSize = fontSizeRange.value + "px";
-      contentEl.style.lineHeight = lineHeightRange.value;
-    }
-
-    function updateFocus() {
-      if (focusToggle.checked) {
-        contentEl.classList.add("focus-mode");
-      } else {
-        contentEl.classList.remove("focus-mode");
-      }
-    }
-
-    function loadVoices() {
-      voices = speechSynthesis.getVoices();
-      voiceSelect.innerHTML = "";
-      voices.forEach((v, i) => {
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = v.name + " (" + v.lang + ")";
-        voiceSelect.appendChild(opt);
-      });
-    }
-
-    function speak(text) {
-      speechSynthesis.cancel();
-      utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = voices[voiceSelect.value];
-      utterance.rate = parseFloat(rateRange.value);
-      speechSynthesis.speak(utterance);
-    }
-
-    function open() {
-      const text = extractPageText();
-      renderContent(text);
-      applyTheme();
-      applyTypography();
-      updateFocus();
-      overlay.classList.add("ir-open");
-    }
-
-    function close() {
-      speechSynthesis.cancel();
-      overlay.classList.remove("ir-open");
-    }
-
-    document.getElementById("ir-close-btn").onclick = close;
-    themeSelect.onchange = applyTheme;
-    fontSizeRange.oninput = applyTypography;
-    lineHeightRange.oninput = applyTypography;
-    focusToggle.onchange = updateFocus;
-
-    ttsPlay.onclick = () => speak(contentEl.innerText);
-    ttsPause.onclick = () => speechSynthesis.pause();
-    ttsResume.onclick = () => speechSynthesis.resume();
-    ttsStop.onclick = () => speechSynthesis.cancel();
-
-    if ("speechSynthesis" in window) {
-      loadVoices();
-      speechSynthesis.onvoiceschanged = loadVoices;
-    }
-
-    return { launch: open, close };
-  })();
-</script>
+            // Initial defaults
+            applyTheme("light");
+            applyTextSize(textSizeRange.value);
+            applyLineSpacing(lineSpacingRange.value);
+        })();
+    </script>
 </body>
 </html>
