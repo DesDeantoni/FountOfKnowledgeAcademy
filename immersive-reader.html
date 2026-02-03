@@ -412,7 +412,9 @@
         moveLine(-1);
       }
     });
-    const utterance = new SpeechSynthesisUtterance(text); speechSynthesis.speak(utterance);
+    // TEXT-TO-SPEECH: Read current page aloud document.getElementById("read-aloud-btn").addEventListener("click", () => { const text = pageText.innerText; 
+    const utterance = new SpeechSynthesisUtterance(text); utterance.rate = 1.0; // Adjust speed if needed speechSynthesis.cancel();
+    // Stop any previous speech speechSynthesis.speak(utterance); });
   </script>
 </body>
 </html>
