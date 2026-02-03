@@ -2,103 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Immersive Reader</title>
+  <title>Immersive Reader with Text-to-Speech</title>
   <style>
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f4f4f4;
       color: #222;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    header {
-      padding: 0.75rem 1.5rem;
-      background: #1f3b4d;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.95rem;
-    }
-
-    header .title {
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-
-    header .controls {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
-    header label {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-
-    header select,
-    header input[type="range"] {
-      font-size: 0.8rem;
     }
 
     main {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
-      gap: 0;
-      flex: 1;
-      min-height: 0;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem 4rem;
     }
 
-    /* Left: input panel */
-    #input-panel {
-      border-right: 1px solid #ddd;
-      background: #fafafa;
-      display: flex;
-      flex-direction: column;
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
     }
 
-    #input-panel h2 {
-      margin: 0;
-      padding: 0.75rem 1rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border-bottom: 1px solid #e0e0e0;
-      background: #ffffff;
-    }
-
-    #source-text {
-      flex: 1;
-      width: 100%;
-      border: none;
-      padding: 0.75rem 1rem;
-      font-size: 0.9rem;
-      resize: none;
-      box-sizing: border-box;
-      outline: none;
-      background: #fafafa;
-    }
-
-    #input-panel footer {
-      padding: 0.75rem 1rem;
-      border-top: 1px solid #e0e0e0;
-      background: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
+    p {
+      line-height: 1.6;
+      margin-bottom: 1rem;
     }
 
     button {
       border: none;
       background: #1f3b4d;
       color: #fff;
-      padding: 0.4rem 0.9rem;
+      padding: 0.5rem 1rem;
       border-radius: 4px;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       cursor: pointer;
     }
 
@@ -107,314 +42,121 @@
       cursor: default;
     }
 
-    /* Right: immersive view */
-    #reader-panel {
-      display: flex;
+    /* Immersive Reader Overlay */
+    #immersive-overlay {
+      position: fixed;
+      inset: 0;
+      background: #111827;
+      color: #e5e7eb;
+      display: none;
       flex-direction: column;
+      z-index: 9999;
+    }
+
+    #ir-header {
+      display: flex;
       align-items: center;
-      justify-content: flex-start;
-      padding: 1.5rem 1rem 1.75rem;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      background: #020617;
+      border-bottom: 1px solid #1f2937;
+      font-size: 0.9rem;
+    }
+
+    #ir-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #ir-title {
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    #ir-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #ir-header-right label {
+      font-size: 0.8rem;
+      color: #d1d5db;
+    }
+
+    #ir-header-right select,
+    #ir-header-right input[type="range"] {
+      font-size: 0.8rem;
+    }
+
+    #ir-close-btn {
+      background: #b91c1c;
+    }
+
+    #ir-content-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem 2rem;
       box-sizing: border-box;
       overflow: hidden;
     }
 
-    #page-container {
-      max-width: 720px;
+    #ir-content {
+      max-width: 800px;
       width: 100%;
-      background: #ffffff;
+      background: #020617;
       border-radius: 8px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       padding: 1.75rem 2rem;
       box-sizing: border-box;
       overflow-y: auto;
-      max-height: calc(100vh - 140px);
-      line-height: 1.6;
+      max-height: calc(100vh - 120px);
+      line-height: 1.7;
       font-size: 1rem;
-      transition: background 0.2s, color 0.2s;
-      position: relative;
     }
 
-    #page-text span.line {
+    #ir-content span.ir-line {
       display: block;
       padding: 0.05rem 0;
       transition: background 0.15s, color 0.15s, opacity 0.15s;
     }
 
-    #page-text.focus-mode span.line {
+    #ir-content.focus-mode span.ir-line {
       opacity: 0.25;
     }
 
-    #page-text.focus-mode span.line.active {
+    #ir-content.focus-mode span.ir-line.active {
       opacity: 1;
-      background: rgba(255, 235, 150, 0.6);
+      background: rgba(234, 179, 8, 0.35);
     }
 
-    #page-indicator {
-      margin-top: 0.75rem;
-      font-size: 0.8rem;
-      color: #555;
+    #ir-footer {
+      padding: 0.75rem 1.25rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 100%;
-      max-width: 720px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      background: #020617;
+      border-top: 1px solid #1f2937;
     }
 
-    #page-indicator button {
-      background: #e0e6ea;
-      color: #1f3b4d;
+    #ir-tts-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    #page-indicator button:disabled {
-      opacity: 0.4;
+    #ir-tts-controls button {
+      background: #1f2937;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.8rem;
     }
 
-    /* Themes */
-    body.theme-light {
-      background: #f4f4f4;
-      color: #222;
-    }
-
-    body.theme-light #page-container {
-      background: #ffffff;
-      color: #222;
-    }
-
-    body.theme-dark {
-      background: #111827;
-      color: #e5e7eb;
-    }
-
-    body.theme-dark #page-container {
-      background: #111827;
-      color: #e5e7eb;
-    }
-
-    body.theme-sepia {
-      background: #f3e7d3;
-      color: #3b2f2a;
-    }
-
-    body.theme-sepia #page-container {
-      background: #fdf3e3;
-      color: #3b2f2a;
-    }
-
-    /* Small screens */
-    @media (max-width: 800px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      #input-panel {
-        max-height: 40vh;
-      }
-      #page-container {
-        max-height: calc(60vh - 80px);
-      }
-    }
-  </style>
-</head>
-<body class="theme-light">
-  <header>
-    <div class="title">Immersive Reader</div>
-    <div class="controls">
-      <label>
-        Theme:
-        <select id="theme-select">
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-          <option value="sepia">Sepia</option>
-        </select>
-      </label>
-      <label>
-        Text size:
-        <input type="range" id="font-size" min="16" max="28" value="18">
-      </label>
-      <label>
-        Line spacing:
-        <input type="range" id="line-height" min="14" max="24" value="16">
-      </label>
-      <label>
-        <input type="checkbox" id="focus-toggle">
-        Line focus
-      </label>
-    </div>
-  </header>
-
-  <main>
-    <section id="input-panel">
-      <h2>Paste Kyla's text here</h2>
-      <textarea id="source-text" placeholder="Paste or type the text you want to read immersively..."></textarea>
-      <footer>
-        <span id="char-count">0 characters</span>
-        <button id="start-btn">Start reading</button>
-      </footer>
-    </section>
-
-    <section id="reader-panel">
-      <div id="page-container">
-        <div id="page-text">
-          <p style="opacity:0.6; font-size:0.9rem;">
-            Paste text on the left and click “Start reading” to enter immersive mode.
-          </p>
-        </div>
-      </div>
-      <div id="page-indicator">
-        <button id="prev-page" disabled>&larr; Previous</button>
-        <span id="page-label">Page 0 of 0</span>
-        <button id="next-page" disabled>Next &rarr;</button>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    const sourceText = document.getElementById('source-text');
-    const charCount = document.getElementById('char-count');
-    const startBtn = document.getElementById('start-btn');
-    const pageText = document.getElementById('page-text');
-    const pageLabel = document.getElementById('page-label');
-    const prevPageBtn = document.getElementById('prev-page');
-    const nextPageBtn = document.getElementById('next-page');
-    const themeSelect = document.getElementById('theme-select');
-    const fontSizeRange = document.getElementById('font-size');
-    const lineHeightRange = document.getElementById('line-height');
-    const focusToggle = document.getElementById('focus-toggle');
-
-    let pages = [];
-    let currentPage = 0;
-    let currentLineIndex = 0;
-
-    // Update character count
-    sourceText.addEventListener('input', () => {
-      charCount.textContent = sourceText.value.length + ' characters';
-    });
-
-    // Split text into pages by sentence count
-    function buildPages(text) {
-      const sentences = text
-        .split(/(?<=[.!?])\s+/)
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
-
-      const sentencesPerPage = 5; // adjust for chunk size
-      const result = [];
-      for (let i = 0; i < sentences.length; i += sentencesPerPage) {
-        result.push(sentences.slice(i, i + sentencesPerPage).join(' '));
-      }
-      return result.length ? result : [text];
-    }
-
-    function renderPage(index) {
-      if (!pages.length) return;
-      currentPage = index;
-      const text = pages[index];
-
-      // Clear
-      pageText.innerHTML = '';
-
-      // Split into lines (roughly by sentence)
-      const lines = text
-        .split(/(?<=[.!?])\s+/)
-        .map(l => l.trim())
-        .filter(l => l.length > 0);
-
-      lines.forEach((line, i) => {
-        const span = document.createElement('span');
-        span.className = 'line';
-        span.textContent = line;
-        if (i === 0) span.classList.add('active');
-        pageText.appendChild(span);
-      });
-
-      currentLineIndex = 0;
-      updatePageLabel();
-      updateNavButtons();
-    }
-
-    function updatePageLabel() {
-      pageLabel.textContent = `Page ${currentPage + 1} of ${pages.length}`;
-    }
-
-    function updateNavButtons() {
-      prevPageBtn.disabled = currentPage === 0;
-      nextPageBtn.disabled = currentPage === pages.length - 1;
-    }
-
-    // Move focus to next/previous line in focus mode
-    function moveLine(delta) {
-      const lines = Array.from(pageText.querySelectorAll('.line'));
-      if (!lines.length) return;
-      lines.forEach(l => l.classList.remove('active'));
-      currentLineIndex = Math.min(
-        Math.max(currentLineIndex + delta, 0),
-        lines.length - 1
-      );
-      lines[currentLineIndex].classList.add('active');
-      lines[currentLineIndex].scrollIntoView({ block: 'center', behavior: 'smooth' });
-    }
-
-    // Start reading
-    startBtn.addEventListener('click', () => {
-      const text = sourceText.value.trim();
-      if (!text) return;
-      pages = buildPages(text);
-      renderPage(0);
-    });
-
-    // Page navigation
-    prevPageBtn.addEventListener('click', () => {
-      if (currentPage > 0) {
-        renderPage(currentPage - 1);
-      }
-    });
-
-    nextPageBtn.addEventListener('click', () => {
-      if (currentPage < pages.length - 1) {
-        renderPage(currentPage + 1);
-      }
-    });
-
-    // Theme
-    themeSelect.addEventListener('change', () => {
-      document.body.classList.remove('theme-light', 'theme-dark', 'theme-sepia');
-      document.body.classList.add('theme-' + themeSelect.value);
-    });
-
-    // Font size + line height
-    function applyTypography() {
-      const size = fontSizeRange.value + 'px';
-      const lh = (parseInt(lineHeightRange.value, 10) / 10).toFixed(1);
-      pageText.style.fontSize = size;
-      pageText.style.lineHeight = lh;
-    }
-
-    fontSizeRange.addEventListener('input', applyTypography);
-    lineHeightRange.addEventListener('input', applyTypography);
-    applyTypography();
-
-    // Focus mode
-    focusToggle.addEventListener('change', () => {
-      if (focusToggle.checked) {
-        pageText.classList.add('focus-mode');
-      } else {
-        pageText.classList.remove('focus-mode');
-      }
-    });
-
-    // Keyboard shortcuts: up/down for line focus
-    document.addEventListener('keydown', (e) => {
-      if (!focusToggle.checked) return;
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        moveLine(1);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        moveLine(-1);
-      }
-    });
-    // TEXT-TO-SPEECH: Read current page aloud document.getElementById("read-aloud-btn").addEventListener("click", () => { const text = pageText.innerText; 
-    const utterance = new SpeechSynthesisUtterance(text); utterance.rate = 1.0; // Adjust speed if needed speechSynthesis.cancel();
-    // Stop any previous speech speechSynthesis.speak(utterance); });
-  </script>
-</body>
-</html>
+    #ir-tts-controls select {
+      font-size: 0.8rem;
