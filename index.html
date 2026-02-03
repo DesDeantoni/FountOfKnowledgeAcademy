@@ -75,7 +75,124 @@
     </style>
 </head>
 
+<!-- Immersive Reader Overlay -->
+<div id="immersive-overlay" class="ir-theme-dark">
+  <header id="ir-header">
+    <div id="ir-header-left">
+      <div id="ir-title">Immersive Reader</div>
+    </div>
+    <div id="ir-header-right">
+      <label>
+        Theme:
+        <select id="ir-theme-select">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="sepia">Sepia</option>
+        </select>
+      </label>
+      <label>
+        Text size:
+        <input type="range" id="ir-font-size" min="16" max="28" value="18">
+      </label>
+      <label>
+        Line spacing:
+        <input type="range" id="ir-line-height" min="14" max="24" value="17">
+      </label>
+      <label>
+        <input type="checkbox" id="ir-focus-toggle">
+        Line focus
+      </label>
+      <button id="ir-close-btn">Close</button>
+    </div>
+  </header>
 
+  <div id="ir-content-wrapper">
+    <div id="ir-content"></div>
+  </div>
+
+  <footer id="ir-footer">
+    <div id="ir-tts-controls">
+      <button id="ir-tts-play">Play</button>
+      <button id="ir-tts-pause">Pause</button>
+      <button id="ir-tts-resume">Resume</button>
+      <button id="ir-tts-stop">Stop</button>
+      <label>
+        Voice:
+        <select id="ir-voice-select"></select>
+      </label>
+      <label>
+        Speed:
+        <input type="range" id="ir-rate" min="0.5" max="2" step="0.1" value="1">
+      </label>
+    </div>
+    <div id="ir-status">Ready</div>
+  </footer>
+</div>
+
+<script>
+/* FULL IMMERSIVE READER ENGINE — DO NOT MODIFY */
+const ImmersiveReader = (() => {
+  const overlay = document.getElementById('immersive-overlay');
+  const contentEl = document.getElementById('ir-content');
+  const themeSelect = document.getElementById('ir-theme-select');
+  const fontSizeRange = document.getElementById('ir-font-size');
+  const lineHeightRange = document.getElementById('ir-line-height');
+  const focusToggle = document.getElementById('ir-focus-toggle');
+  const statusEl = document.getElementById('ir-status');
+
+  const ttsPlayBtn = document.getElementById('ir-tts-play');
+  const ttsPauseBtn = document.getElementById('ir-tts-pause');
+  const ttsResumeBtn = document.getElementById('ir-tts-resume');
+  const ttsStopBtn = document.getElementById('ir-tts-stop');
+  const voiceSelect = document.getElementById('ir-voice-select');
+  const rateRange = document.getElementById('ir-rate');
+
+  let currentLines = [];
+  let currentLineIndex = 0;
+  let voices = [];
+  let utterance = null;
+
+  function extractPageText() {
+    const main = document.querySelector('main, article') || document.body;
+    const clone = main.cloneNode(true);
+    clone.querySelectorAll('script, style, nav, button, header, footer').forEach(el => el.remove());
+    return clone.innerText
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0)
+      .join(' ');
+  }
+
+  function buildLines(text) {
+    return text
+      .split(/(?<=[.!?])\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+  }
+
+  function renderContent(text) {
+    contentEl.innerHTML = '';
+    currentLines = buildLines(text);
+    currentLineIndex = 0;
+
+    currentLines.forEach((line, i) => {
+      const span = document.createElement('span');
+      span.className = 'ir-line';
+      if (i === 0) span.classList.add('active');
+      span.textContent = line;
+      contentEl.appendChild(span);
+    });
+  }
+
+  function applyTypography() {
+    const size = fontSizeRange.value + 'px';
+    const lh = (parseInt(lineHeightRange.value, 10) / 10).toFixed(1);
+    contentEl.style.fontSize = size;
+    contentEl.style.lineHeight = lh;
+  }
+
+  function applyTheme() {
+    overlay.classList.remove('ir-theme-dark', 'ir-theme
 
 
 <body>
@@ -99,7 +216,8 @@
 
     <div><hr></div>
 
-    
+   <button onclick="ImmersiveReader.launch()">Open Immersive Reader</button>
+ 
 
     <p>
         Welcome to Fount of Knowledge Academy — a mastery-driven homeschool program where learning is not just education, but a sacred journey. 
