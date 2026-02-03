@@ -75,125 +75,257 @@
     </style>
 </head>
 
-<!-- Immersive Reader Overlay -->
-<div id="immersive-overlay" class="ir-theme-dark">
-  <header id="ir-header">
-    <div id="ir-header-left">
-      <div id="ir-title">Immersive Reader</div>
+<!-- Modern Immersive Reader Overlay -->
+<div id="immersive-overlay" aria-hidden="true">
+  <div class="ir-toolbar">
+    <div class="ir-left">
+      <button class="ir-btn" id="ir-close-btn">✕</button>
     </div>
-    <div id="ir-header-right">
+    <div class="ir-center">
       <label>
         Theme:
         <select id="ir-theme-select">
-          <option value="dark">Dark</option>
           <option value="light">Light</option>
           <option value="sepia">Sepia</option>
+          <option value="dark">Dark</option>
         </select>
       </label>
+
       <label>
         Text size:
-        <input type="range" id="ir-font-size" min="16" max="28" value="18">
+        <input type="range" id="ir-font-size" min="16" max="36" value="20">
       </label>
+
       <label>
         Line spacing:
-        <input type="range" id="ir-line-height" min="14" max="24" value="17">
+        <input type="range" id="ir-line-height" min="1.2" max="2.2" step="0.1" value="1.6">
       </label>
+
       <label>
         <input type="checkbox" id="ir-focus-toggle">
         Line focus
       </label>
-      <button id="ir-close-btn">Close</button>
     </div>
-  </header>
 
-  <div id="ir-content-wrapper">
-    <div id="ir-content"></div>
-  </div>
+    <div class="ir-right">
+      <button class="ir-btn" id="ir-tts-play">▶</button>
+      <button class="ir-btn" id="ir-tts-pause">⏸</button>
+      <button class="ir-btn" id="ir-tts-resume">⏵</button>
+      <button class="ir-btn" id="ir-tts-stop">⏹</button>
 
-  <footer id="ir-footer">
-    <div id="ir-tts-controls">
-      <button id="ir-tts-play">Play</button>
-      <button id="ir-tts-pause">Pause</button>
-      <button id="ir-tts-resume">Resume</button>
-      <button id="ir-tts-stop">Stop</button>
       <label>
         Voice:
         <select id="ir-voice-select"></select>
       </label>
+
       <label>
         Speed:
         <input type="range" id="ir-rate" min="0.5" max="2" step="0.1" value="1">
       </label>
     </div>
-    <div id="ir-status">Ready</div>
-  </footer>
+  </div>
+
+  <div class="ir-content-wrapper">
+    <div id="ir-content"></div>
+  </div>
 </div>
 
+<style>
+  /* SCOPED: Immersive Reader only */
+  #immersive-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    flex-direction: column;
+    z-index: 999999;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+  }
+
+  #immersive-overlay.ir-open {
+    display: flex;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  #immersive-overlay .ir-toolbar {
+    width: 100%;
+    background: #f3f3f3;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  #immersive-overlay .ir-btn {
+    background: #e0e0e0;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  #immersive-overlay .ir-btn:hover {
+    background: #d5d5d5;
+  }
+
+  #immersive-overlay .ir-content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px 15%;
+  }
+
+  #immersive-overlay #ir-content {
+    font-size: 20px;
+    line-height: 1.6;
+    color: #222;
+  }
+
+  #immersive-overlay .focus-mode .ir-line:not(.active) {
+    opacity: 0.25;
+  }
+
+  #immersive-overlay .ir-line.active {
+    background: #fff8c5;
+    transition: background 0.2s;
+  }
+
+  /* Themes */
+  #immersive-overlay.ir-theme-light {
+    background: white;
+    color: #222;
+  }
+
+  #immersive-overlay.ir-theme-sepia {
+    background: #f4ecd8;
+    color: #4b3e2a;
+  }
+
+  #immersive-overlay.ir-theme-dark {
+    background: #1e1e1e;
+    color: #e5e5e5;
+  }
+</style>
+
 <script>
-/* FULL IMMERSIVE READER ENGINE — DO NOT MODIFY */
-const ImmersiveReader = (() => {
-  const overlay = document.getElementById('immersive-overlay');
-  const contentEl = document.getElementById('ir-content');
-  const themeSelect = document.getElementById('ir-theme-select');
-  const fontSizeRange = document.getElementById('ir-font-size');
-  const lineHeightRange = document.getElementById('ir-line-height');
-  const focusToggle = document.getElementById('ir-focus-toggle');
-  const statusEl = document.getElementById('ir-status');
+  const ImmersiveReader = (() => {
+    const overlay = document.getElementById("immersive-overlay");
+    const contentEl = document.getElementById("ir-content");
 
-  const ttsPlayBtn = document.getElementById('ir-tts-play');
-  const ttsPauseBtn = document.getElementById('ir-tts-pause');
-  const ttsResumeBtn = document.getElementById('ir-tts-resume');
-  const ttsStopBtn = document.getElementById('ir-tts-stop');
-  const voiceSelect = document.getElementById('ir-voice-select');
-  const rateRange = document.getElementById('ir-rate');
+    const themeSelect = document.getElementById("ir-theme-select");
+    const fontSizeRange = document.getElementById("ir-font-size");
+    const lineHeightRange = document.getElementById("ir-line-height");
+    const focusToggle = document.getElementById("ir-focus-toggle");
 
-  let currentLines = [];
-  let currentLineIndex = 0;
-  let voices = [];
-  let utterance = null;
+    const ttsPlay = document.getElementById("ir-tts-play");
+    const ttsPause = document.getElementById("ir-tts-pause");
+    const ttsResume = document.getElementById("ir-tts-resume");
+    const ttsStop = document.getElementById("ir-tts-stop");
+    const voiceSelect = document.getElementById("ir-voice-select");
+    const rateRange = document.getElementById("ir-rate");
 
-  function extractPageText() {
-    const main = document.querySelector('main, article') || document.body;
-    const clone = main.cloneNode(true);
-    clone.querySelectorAll('script, style, nav, button, header, footer').forEach(el => el.remove());
-    return clone.innerText
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => l.length > 0)
-      .join(' ');
-  }
+    let voices = [];
+    let utterance = null;
 
-  function buildLines(text) {
-    return text
-      .split(/(?<=[.!?])\s+/)
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
-  }
+    function extractPageText() {
+      const main = document.querySelector("main, article, body");
+      const clone = main.cloneNode(true);
+      clone.querySelectorAll("script, style, nav, button, header, footer").forEach(el => el.remove());
+      return clone.innerText.trim();
+    }
 
-  function renderContent(text) {
-    contentEl.innerHTML = '';
-    currentLines = buildLines(text);
-    currentLineIndex = 0;
+    function renderContent(text) {
+      contentEl.innerHTML = "";
+      const lines = text.split(/(?<=[.!?])\s+/);
 
-    currentLines.forEach((line, i) => {
-      const span = document.createElement('span');
-      span.className = 'ir-line';
-      if (i === 0) span.classList.add('active');
-      span.textContent = line;
-      contentEl.appendChild(span);
-    });
-  }
+      lines.forEach((line, i) => {
+        const span = document.createElement("span");
+        span.className = "ir-line";
+        span.textContent = line;
+        contentEl.appendChild(span);
+      });
+    }
 
-  function applyTypography() {
-    const size = fontSizeRange.value + 'px';
-    const lh = (parseInt(lineHeightRange.value, 10) / 10).toFixed(1);
-    contentEl.style.fontSize = size;
-    contentEl.style.lineHeight = lh;
-  }
+    function applyTheme() {
+      overlay.classList.remove("ir-theme-light", "ir-theme-sepia", "ir-theme-dark");
+      overlay.classList.add("ir-theme-" + themeSelect.value);
+    }
 
-  function applyTheme() {
-    overlay.classList.remove('ir-theme-dark', 'ir-theme
+    function applyTypography() {
+      contentEl.style.fontSize = fontSizeRange.value + "px";
+      contentEl.style.lineHeight = lineHeightRange.value;
+    }
 
+    function updateFocus() {
+      if (focusToggle.checked) {
+        contentEl.classList.add("focus-mode");
+      } else {
+        contentEl.classList.remove("focus-mode");
+      }
+    }
+
+    function loadVoices() {
+      voices = speechSynthesis.getVoices();
+      voiceSelect.innerHTML = "";
+      voices.forEach((v, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = v.name + " (" + v.lang + ")";
+        voiceSelect.appendChild(opt);
+      });
+    }
+
+    function speak(text) {
+      speechSynthesis.cancel();
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = voices[voiceSelect.value];
+      utterance.rate = parseFloat(rateRange.value);
+      speechSynthesis.speak(utterance);
+    }
+
+    function open() {
+      const text = extractPageText();
+      renderContent(text);
+      applyTheme();
+      applyTypography();
+      updateFocus();
+      overlay.classList.add("ir-open");
+    }
+
+    function close() {
+      speechSynthesis.cancel();
+      overlay.classList.remove("ir-open");
+    }
+
+    document.getElementById("ir-close-btn").onclick = close;
+    themeSelect.onchange = applyTheme;
+    fontSizeRange.oninput = applyTypography;
+    lineHeightRange.oninput = applyTypography;
+    focusToggle.onchange = updateFocus;
+
+    ttsPlay.onclick = () => speak(contentEl.innerText);
+    ttsPause.onclick = () => speechSynthesis.pause();
+    ttsResume.onclick = () => speechSynthesis.resume();
+    ttsStop.onclick = () => speechSynthesis.cancel();
+
+    if ("speechSynthesis" in window) {
+      loadVoices();
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    return { launch: open, close };
+  })();
+</script>
 
 <body>
     
